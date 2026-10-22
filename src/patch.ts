@@ -83,7 +83,10 @@ const PATCH_HEADER = `# MCP servers managed by the dsh-mcp-manager-web plugin.
 /** Resolve the user patch file for the running profile (config override wins). */
 export function resolvePatchPath(configured?: string): string {
   if (configured !== undefined && configured.trim() !== '') return configured.trim()
-  return join(resolveDshHome(), 'profiles', 'web', 'cordis.patch.yml')
+  // Default to the profile this host is actually running: the desktop app sets
+  // DSH_PROFILE (e.g. `desktop`), while CLI hosts fall back to `web`.
+  const profile = process.env['DSH_PROFILE']?.trim()
+  return join(resolveDshHome(), 'profiles', profile !== undefined && profile !== '' ? profile : 'web', 'cordis.patch.yml')
 }
 
 /** Read and parse the patch file; a missing file yields an empty list. */

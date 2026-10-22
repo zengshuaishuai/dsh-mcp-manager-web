@@ -21,7 +21,9 @@ const CSS = `
   background:var(--dsw-alias-bg-layer-3,#22262e);color:var(--dsw-alias-label-primary,#e6e8eb);cursor:pointer;line-height:1.45;white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
 .dshmcp-btn:hover:not(:disabled){border-color:var(--dsw-alias-label-dimmed,#4a505c)}
 .dshmcp-btn:disabled{opacity:.45;cursor:default}
-.dshmcp-btn-primary{background:var(--dsw-alias-button-primary-fill,#4f8cff);border-color:transparent;color:var(--dsw-alias-label-primary-foreground,#fff)}
+.dshmcp-btn-primary{background:var(--dsw-alias-bg-layer-3,#22262e);border-color:var(--dsw-alias-border-l2,#2b2f38);color:var(--dsw-alias-brand-primary,#4f8cff);font-weight:500;
+  background:color-mix(in srgb,var(--dsw-alias-brand-primary,#4f8cff) 12%,transparent);border-color:color-mix(in srgb,var(--dsw-alias-brand-primary,#4f8cff) 32%,transparent)}
+.dshmcp-btn-primary:hover:not(:disabled){background:color-mix(in srgb,var(--dsw-alias-brand-primary,#4f8cff) 20%,transparent);border-color:color-mix(in srgb,var(--dsw-alias-brand-primary,#4f8cff) 50%,transparent)}
 .dshmcp-btn-danger{color:var(--dsw-alias-state-error-primary,#ff6b6b)}
 .dshmcp-btn-sm{padding:4px 10px;font-size:12px;border-radius:7px;gap:5px}
 .dshmcp-iconbtn{appearance:none;font:inherit;border:1px solid transparent;border-radius:7px;background:transparent;color:var(--dsw-alias-label-secondary,#a7adb8);cursor:pointer;padding:5px 7px;display:inline-flex;align-items:center}

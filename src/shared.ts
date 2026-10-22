@@ -65,6 +65,29 @@ export interface McpServerConfig {
   }
 }
 
+/** One model-facing tool, projected from the live tool registry. */
+export interface McpToolInfo {
+  /** Raw tool name without the `mcp__<serverName>__` namespace prefix. */
+  name: string
+  description?: string
+  /** JSON Schema of the tool input. */
+  parameters?: Record<string, unknown>
+}
+
+/** One MCP prompt advertised by a server. */
+export interface McpPromptInfo {
+  name: string
+  description?: string
+}
+
+/** One MCP resource advertised by a server. */
+export interface McpResourceInfo {
+  name: string
+  uri: string
+  description?: string
+  mimeType?: string
+}
+
 /** Full server snapshot the host exposes to the client. */
 export interface McpServerInfo extends McpServerConfig {
   /** Loader entry id of the mcp-client plugin instance. */
@@ -75,6 +98,8 @@ export interface McpServerInfo extends McpServerConfig {
   fiberPhase: FiberPhase
   /** Number of `mcp__<serverName>__*` tools currently registered. */
   toolCount: number
+  /** Live tool catalog registered by this server, sorted by name. */
+  tools: McpToolInfo[]
   /** true when this server is defined in the user patch layer (removable). */
   userManaged: boolean
 }
@@ -84,6 +109,21 @@ export interface McpProbeResult {
   ok: boolean
   latencyMs: number
   toolCount?: number
+  /** Raw tool names reported by `tools/list` during the probe. */
+  toolNames?: string[]
+  /** `serverInfo.version` reported during `initialize`, when the server sends one. */
+  serverVersion?: string
+  error?: string
+}
+
+/** On-demand inspection of what a server advertises (fresh connection). */
+export interface McpInspectResult {
+  ok: boolean
+  latencyMs: number
+  tools: McpToolInfo[]
+  prompts: McpPromptInfo[]
+  resources: McpResourceInfo[]
+  serverVersion?: string
   error?: string
 }
 
@@ -101,6 +141,7 @@ export type McpEndpoint =
   | 'setEnabled'
   | 'update'
   | 'probe'
+  | 'inspect'
   | 'patchInfo'
 
 /** Server-side validation errors, keyed by field for inline form display. */

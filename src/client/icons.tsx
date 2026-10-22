@@ -98,11 +98,47 @@ export function PowerIcon({ size, className }: IconProps): JSX.Element {
   )
 }
 
+/**
+ * MCP connector (plug) icon: two pins, a rounded body and a stem, tilted like
+ * the MCP mark. Used in the page header and to replace the settings nav gear.
+ */
+export function McpIcon({ size, className }: IconProps): JSX.Element {
+  return (
+    <svg {...base(size, className)}>
+      <g transform="rotate(-30 12 12)">
+        <path d="M9 3.5v4M15 3.5v4" />
+        <rect x="6" y="7.5" width="12" height="7" rx="3" />
+        <path d="M12 14.5v5" />
+      </g>
+    </svg>
+  )
+}
+
 /** Chevron-down icon. */
 export function ChevronDownIcon({ size, className }: IconProps): JSX.Element {
   return (
     <svg {...base(size, className)}>
       <path d="m6 9 6 6 6-6" />
+    </svg>
+  )
+}
+
+
+/** Search icon. */
+export function SearchIcon({ size, className }: IconProps): JSX.Element {
+  return (
+    <svg {...base(size, className)}>
+      <circle cx="11" cy="11" r="7" />
+      <path d="m20 20-3.6-3.6" />
+    </svg>
+  )
+}
+
+/** Funnel (filter) icon. */
+export function FilterIcon({ size, className }: IconProps): JSX.Element {
+  return (
+    <svg {...base(size, className)}>
+      <path d="M3 5h18l-7 8v6l-4-2v-4Z" />
     </svg>
   )
 }

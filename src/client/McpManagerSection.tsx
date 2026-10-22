@@ -12,22 +12,22 @@
  *
  * @module dsh-mcp-manager/client/McpManagerSection
  */
-import { useCallback, useEffect, useMemo, useReducer, useState } from 'react'
+import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react'
 import type { ClientContext } from '@deepseek-ai/dsh-client-runtime/client'
 // Type-only: pulls `Context { locale }` into the program.
 import type {} from '@deepseek-ai/dsh-client-locale/client'
 import type { TranslateNS } from '@deepseek-ai/dsh-client-ui-slots'
 import type { McpFieldErrors, McpProbeResult, McpServerConfig, McpServerInfo } from '../shared.ts'
 import { callRpc, McpManagerRpcError } from './rpc.ts'
+import { ServerDetail } from './ServerDetail.tsx'
 import { NS } from './locales.ts'
 import {
-  EditIcon,
-  PlugIcon,
+  ChevronDownIcon,
+  FilterIcon,
   PlusIcon,
-  PowerIcon,
   RefreshIcon,
-  ServerIcon,
-  TrashIcon,
+  McpIcon,
+  SearchIcon,
 } from './icons.tsx'
 
 interface PatchInfo {
@@ -113,8 +113,16 @@ export function McpManagerSection({ ctx }: SectionProps): JSX.Element {
   const [error, setError] = useState<string | null>(null)
   const [adding, setAdding] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
+  const [detailId, setDetailId] = useState<string | null>(null)
   const [busy, setBusy] = useState<string | null>(null)
   const [probes, setProbes] = useState<Record<string, McpProbeResult>>({})
+  const [versions, setVersions] = useState<Record<string, string>>({})
+  const [query, setQuery] = useState('')
+  const [searchOpen, setSearchOpen] = useState(false)
+  const [connectedOnly, setConnectedOnly] = useState(false)
+
+  /** Optimistic enable/disable intents, kept until the loader catches up. */
+  const pendingToggles = useRef<Record<string, boolean>>({})
 
   const formOpen = adding || editingId !== null
   const actionsDisabled = busy !== null || formOpen
@@ -124,7 +132,15 @@ export function McpManagerSection({ ctx }: SectionProps): JSX.Element {
     setError(null)
     try {
       const { servers: list } = await callRpc<{ servers: McpServerInfo[] }>(ctx, 'list')
-      setServers(list)
+      setServers(list.map((server) => {
+        const intent = pendingToggles.current[server.id]
+        if (intent === undefined) return server
+        if (server.enabled === intent) {
+          delete pendingToggles.current[server.id]
+          return server
+        }
+        return { ...server, enabled: intent, fiberPhase: intent ? server.fiberPhase : null }
+      }))
       const { patch } = await callRpc<{ patch: PatchInfo }>(ctx, 'patchInfo')
       setPatchInfo(patch)
     } catch (err) {
@@ -157,11 +173,31 @@ export function McpManagerSection({ ctx }: SectionProps): JSX.Element {
   }, [refreshSettled, t])
 
   const toggleEnabled = useCallback((server: McpServerInfo) => {
-    void run(
-      () => callRpc(ctx, 'setEnabled', { id: server.id, enabled: !server.enabled }),
-      `toggle:${server.id}`,
-    )
-  }, [ctx, run])
+    const next = !server.enabled
+    const key = `toggle:${server.id}`
+    pendingToggles.current[server.id] = next
+    window.setTimeout(() => {
+      if (pendingToggles.current[server.id] === next) delete pendingToggles.current[server.id]
+    }, 6000)
+    setServers((prev) => prev.map((item) => (item.id === server.id
+      ? { ...item, enabled: next, fiberPhase: next ? item.fiberPhase : null }
+      : item)))
+    setBusy(key)
+    setError(null)
+    void (async () => {
+      try {
+        await callRpc(ctx, 'setEnabled', { id: server.id, enabled: next })
+        window.setTimeout(() => { void refresh() }, 700)
+        window.setTimeout(() => { void refresh() }, 2200)
+      } catch (err) {
+        delete pendingToggles.current[server.id]
+        setServers((prev) => prev.map((item) => (item.id === server.id ? { ...item, enabled: !next } : item)))
+        setError(errorMessage(err, t))
+      } finally {
+        setBusy(null)
+      }
+    })()
+  }, [ctx, refresh, t])
 
   const removeServer = useCallback((server: McpServerInfo) => {
     if (!window.confirm(t('removeConfirm', { name: server.serverName, id: server.id }))) return
@@ -172,11 +208,19 @@ export function McpManagerSection({ ctx }: SectionProps): JSX.Element {
     void run(async () => {
       const result = await callRpc<McpProbeResult>(ctx, 'probe', { id: server.id })
       setProbes((prev) => ({ ...prev, [server.id]: result }))
+      if (result.ok && typeof result.serverVersion === 'string' && result.serverVersion !== '') {
+        setVersions((prev) => ({ ...prev, [server.id]: result.serverVersion as string }))
+      }
     }, `probe:${server.id}`)
   }, [ctx, run])
 
+  const handleVersion = useCallback((id: string, version: string) => {
+    setVersions((prev) => ({ ...prev, [id]: version }))
+  }, [])
+
   const beginAdd = useCallback(() => {
     setEditingId(null)
+    setDetailId(null)
     setAdding(true)
   }, [])
 
@@ -197,36 +241,96 @@ export function McpManagerSection({ ctx }: SectionProps): JSX.Element {
     return { total: servers.length, enabled, connected, failed }
   }, [servers])
 
+  const footer = patchInfo !== null ? (
+    <div className="dshmcp-footer" title={patchInfo.path}>
+      {patchInfo.exists ? patchInfo.path : t('patchMissing', { path: patchInfo.path })}
+    </div>
+  ) : null
+
+  const detailServer = detailId !== null ? servers.find((server) => server.id === detailId) : undefined
+  if (detailServer !== undefined) {
+    return (
+      <div className="dshmcp-section">
+        <ServerDetail
+          ctx={ctx}
+          t={t}
+          server={detailServer}
+          probe={probes[detailServer.id]}
+          patchPath={patchInfo?.path}
+          busy={actionsDisabled}
+          onBack={() => setDetailId(null)}
+          onToggle={() => toggleEnabled(detailServer)}
+          onTest={() => testConnection(detailServer)}
+          onEdit={() => { setDetailId(null); beginEdit(detailServer) }}
+          onRemove={() => removeServer(detailServer)}
+          onVersion={handleVersion}
+        />
+        {footer}
+      </div>
+    )
+  }
+
+  const needle = query.trim().toLowerCase()
+  const visible = servers.filter((server) => {
+    if (connectedOnly && !(server.enabled && server.fiberPhase === 'active' && server.toolCount > 0)) return false
+    if (needle === '') return true
+    return server.serverName.toLowerCase().includes(needle) || server.id.toLowerCase().includes(needle)
+  })
+
   return (
     <div className="dshmcp-section">
       <div className="dshmcp-head">
         <span className="dshmcp-head-title">
-          <ServerIcon size={15} />
+          <McpIcon size={17} />
           {t('title')}
-          <span className="dshmcp-head-sub">{t('total', { count: String(summary.total) })}</span>
         </span>
-        <button type="button" className="dshmcp-iconbtn" title={t('refresh')} onClick={() => void refresh()} disabled={actionsDisabled || loading}>
+        <span className="dshmcp-head-sub">{t('total', { count: String(summary.total) })}</span>
+        <span className="dshmcp-spacer" />
+        <button
+          type="button"
+          className="dshmcp-iconbtn"
+          title={t('refresh')}
+          onClick={() => void refresh()}
+          disabled={loading}
+        >
           {loading ? <span className="dshmcp-spin" /> : <RefreshIcon size={14} />}
         </button>
-      </div>
-
-      <div className="dshmcp-toolbar">
+        <button
+          type="button"
+          className={`dshmcp-iconbtn${connectedOnly ? ' dshmcp-iconbtn-on' : ''}`}
+          title={t('filterConnected')}
+          onClick={() => setConnectedOnly((value) => !value)}
+        >
+          <FilterIcon size={15} />
+        </button>
+        <button
+          type="button"
+          className={`dshmcp-iconbtn${searchOpen ? ' dshmcp-iconbtn-on' : ''}`}
+          title={t('searchServers')}
+          onClick={() => setSearchOpen((value) => !value)}
+        >
+          <SearchIcon size={15} />
+        </button>
         <button
           type="button"
           className="dshmcp-btn dshmcp-btn-primary dshmcp-btn-sm"
           onClick={beginAdd}
           disabled={actionsDisabled}
-          title={editingId !== null ? t('formEditTitle', { name: servers.find((s) => s.id === editingId)?.serverName ?? editingId }) : undefined}
         >
-          <PlusIcon size={12} /> {t('addServer')}
+          <PlusIcon size={12} /> {t('addServer')} <ChevronDownIcon size={12} />
         </button>
-        <span className="dshmcp-spacer" />
-        <span className="dshmcp-meta">
-          <span>{t('connected', { count: String(summary.connected) })}</span>
-          {summary.failed > 0 ? <span className="dshmcp-probe-bad">{t('failed', { count: String(summary.failed) })}</span> : null}
-          <span>{t('enabledOf', { count: String(summary.enabled), total: String(summary.total) })}</span>
-        </span>
       </div>
+
+      {searchOpen ? (
+        <input
+          className="dshmcp-input dshmcp-search"
+          autoFocus
+          placeholder={t('searchServers')}
+          value={query}
+          spellCheck={false}
+          onChange={(e) => setQuery(e.target.value)}
+        />
+      ) : null}
 
       {error !== null ? <div className="dshmcp-error">{error}</div> : null}
 
@@ -246,6 +350,22 @@ export function McpManagerSection({ ctx }: SectionProps): JSX.Element {
         />
       ) : null}
 
+      {editingId !== null ? (
+        <ServerForm
+          ctx={ctx}
+          t={t}
+          initial={servers.find((server) => server.id === editingId)}
+          existingIds={new Set(servers.map((s) => s.id))}
+          existingNames={new Set(servers.map((s) => s.serverName))}
+          busy={busy !== null}
+          onCancel={closeForms}
+          onSaved={() => {
+            closeForms()
+            void run(() => Promise.resolve(), 'form:update')
+          }}
+        />
+      ) : null}
+
       {loading && servers.length === 0 ? (
         <div className="dshmcp-empty"><span className="dshmcp-spin" /> {t('loading')}</div>
       ) : null}
@@ -258,88 +378,47 @@ export function McpManagerSection({ ctx }: SectionProps): JSX.Element {
         </div>
       ) : null}
 
-      {servers.map((server) => {
-        if (server.id === editingId) {
-          return (
-            <ServerForm
-              key={server.id}
-              ctx={ctx}
-              t={t}
-              initial={server}
-              existingIds={new Set(servers.map((s) => s.id))}
-              existingNames={new Set(servers.map((s) => s.serverName))}
-              busy={busy !== null}
-              onCancel={closeForms}
-              onSaved={() => {
-                closeForms()
-                void run(() => Promise.resolve(), `form:update:${server.id}`)
-              }}
-            />
-          )
-        }
-        const status = statusOf(server)
-        const probe = probes[server.id]
-        return (
-          <div className="dshmcp-card" key={server.id}>
-            <div className="dshmcp-card-head">
-              <span className={`dshmcp-status dshmcp-status-${status.tone}`}>
-                <span className="dshmcp-status-dot" />
-                {t(status.key, status.count !== undefined ? { count: status.count } : undefined)}
-              </span>
-              <span className="dshmcp-spacer" />
-              <span className="dshmcp-id" title={server.id}>{server.id}</span>
-            </div>
-            <div className="dshmcp-name">{server.serverName || t('unnamed')}</div>
-            <div className="dshmcp-target" title={targetOf(server)}>
-              {targetOf(server) || (server.transport === 'stdio' ? 'stdio' : server.url ?? 'streamable-http')}
-            </div>
-            <div className="dshmcp-meta">
-              <span>{server.transport}</span>
-              <span>{t('toolCount', { count: String(server.toolCount) })}</span>
-              {!server.userManaged ? <span>{t('bundleDefined')}</span> : null}
-              {server.failOnStartupError === true ? <span>{t('fieldFailStartup')}</span> : null}
-              {server.reconnect?.enabled === false ? <span>{t('reconnectOff')}</span> : null}
-            </div>
-            {probe !== undefined ? (
-              <div className={`dshmcp-probe ${probe.ok ? 'dshmcp-probe-ok' : 'dshmcp-probe-bad'}`}>
-                {probe.ok
-                  ? t('probeOk', {
-                      ms: String(probe.latencyMs),
-                      count: probe.toolCount !== undefined ? String(probe.toolCount) : '?',
-                    })
-                  : t('probeFail', { error: probe.error ?? 'failed', ms: String(probe.latencyMs) })}
+      {servers.length > 0 ? (
+        <div className="dshmcp-rows">
+          {visible.length === 0 ? <div className="dshmcp-empty">{t('noMatch')}</div> : null}
+          {visible.map((server) => {
+            const status = statusOf(server)
+            const version = versions[server.id]
+            return (
+              <div className={`dshmcp-row${server.enabled ? '' : ' dshmcp-row-off'}`} key={server.id}>
+                <button
+                  type="button"
+                  className="dshmcp-row-main"
+                  onClick={() => {
+                    setAdding(false)
+                    setEditingId(null)
+                    setDetailId(server.id)
+                  }}
+                >
+                  <span className={`dshmcp-dot dshmcp-dot-${status.tone}`} />
+                  <span className="dshmcp-row-name">{server.serverName || t('unnamed')}</span>
+                  {version !== undefined ? <span className="dshmcp-row-version">{version}</span> : null}
+                  <span className="dshmcp-badge">{server.transport === 'stdio' ? 'stdio' : t('badgeStreaming')}</span>
+                  <span className="dshmcp-row-tools">{t('toolCount', { count: String(server.toolCount) })}</span>
+                </button>
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={server.enabled}
+                  className={`dshmcp-switch${server.enabled ? ' dshmcp-switch-on' : ''}${busy === `toggle:${server.id}` ? ' dshmcp-switch-busy' : ''}`}
+                  disabled={formOpen || (busy !== null && busy !== `toggle:${server.id}`)}
+                  title={server.enabled ? t('disable') : t('enable')}
+                  onClick={() => toggleEnabled(server)}
+                >
+                  <span className="dshmcp-switch-knob" />
+                </button>
               </div>
-            ) : null}
-            <div className="dshmcp-actions">
-              <button type="button" className="dshmcp-btn dshmcp-btn-sm" onClick={() => toggleEnabled(server)} disabled={actionsDisabled}>
-                <PowerIcon size={12} /> {server.enabled ? t('disable') : t('enable')}
-              </button>
-              <button type="button" className="dshmcp-btn dshmcp-btn-sm" onClick={() => testConnection(server)} disabled={actionsDisabled}>
-                {busy === `probe:${server.id}` ? <span className="dshmcp-spin" /> : <PlugIcon size={12} />} {t('test')}
-              </button>
-              <button type="button" className="dshmcp-btn dshmcp-btn-sm" onClick={() => beginEdit(server)} disabled={actionsDisabled}>
-                <EditIcon size={12} /> {t('edit')}
-              </button>
-              <span className="dshmcp-spacer" />
-              <button
-                type="button"
-                className="dshmcp-btn dshmcp-btn-sm dshmcp-btn-danger"
-                onClick={() => removeServer(server)}
-                disabled={actionsDisabled}
-                title={server.userManaged ? t('remove') : t('bundleDefined')}
-              >
-                <TrashIcon size={12} /> {t('remove')}
-              </button>
-            </div>
-          </div>
-        )
-      })}
-
-      {patchInfo !== null ? (
-        <div className="dshmcp-footer" title={patchInfo.path}>
-          {patchInfo.exists ? patchInfo.path : t('patchMissing', { path: patchInfo.path })}
+            )
+          })}
         </div>
       ) : null}
+
+      {footer}
     </div>
   )
 }

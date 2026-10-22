@@ -34,6 +34,8 @@ export type McpManagerKeys =
   | 'statusUnloading'
   | 'statusNotLoaded'
   | 'toolCount'
+  | 'toolsShow'
+  | 'toolsHide'
   | 'bundleDefined'
   | 'reconnectOff'
   | 'probeOk'
@@ -71,6 +73,40 @@ export type McpManagerKeys =
   | 'errInvalidConfig'
   | 'errNotFound'
   | 'errUnknown'
+  | 'back'
+  | 'tabOverview'
+  | 'tabTools'
+  | 'tabPrompts'
+  | 'tabResources'
+  | 'tabLogs'
+  | 'searchServers'
+  | 'searchTools'
+  | 'filterConnected'
+  | 'badgeStreaming'
+  | 'noTools'
+  | 'noPrompts'
+  | 'noResources'
+  | 'noMatch'
+  | 'noParams'
+  | 'description'
+  | 'inputSchema'
+  | 'schemaName'
+  | 'schemaType'
+  | 'schemaDesc'
+  | 'schemaDefault'
+  | 'inspectLoading'
+  | 'inspectFailed'
+  | 'logsEmpty'
+  | 'logOpened'
+  | 'logProbeOk'
+  | 'logProbeFail'
+  | 'logInspectOk'
+  | 'logInspectFail'
+  | 'fieldStatus'
+  | 'fieldTarget'
+  | 'fieldPatch'
+  | 'fieldVersion'
+  | 'loadingHint'
 
 declare module '@deepseek-ai/dsh-client-ui-slots' {
   interface LocaleNamespaceMap {
@@ -106,6 +142,8 @@ export const zh: McpManagerDict = {
   statusUnloading: '卸载中',
   statusNotLoaded: '未加载',
   toolCount: '{count} 个工具',
+  toolsShow: '查看 {count} 个工具',
+  toolsHide: '收起工具',
   bundleDefined: 'bundle 定义',
   reconnectOff: '已关闭重连',
   probeOk: '✓ 已连接，耗时 {ms}ms · {count} 个工具',
@@ -142,6 +180,40 @@ export const zh: McpManagerDict = {
   errDuplicateName: 'serverName 已被其他服务器使用',
   errInvalidConfig: 'MCP 服务器配置无效',
   errNotFound: '未找到该 MCP 服务器条目',
+  back: '返回',
+  tabOverview: '通用',
+  tabTools: '工具',
+  tabPrompts: '提示',
+  tabResources: '资源',
+  tabLogs: '日志',
+  searchServers: '搜索服务器…',
+  searchTools: '搜索工具…',
+  filterConnected: '只看已连接',
+  badgeStreaming: '流式',
+  noTools: '当前连接没有可用工具',
+  noPrompts: '当前连接未提供提示',
+  noResources: '当前连接未提供资源',
+  noMatch: '没有匹配项',
+  noParams: '无参数',
+  description: '描述',
+  inputSchema: '输入模式',
+  schemaName: '参数',
+  schemaType: '类型',
+  schemaDesc: '说明',
+  schemaDefault: '（默认 {value}）',
+  inspectLoading: '正在连接读取…',
+  inspectFailed: '读取失败：{error}',
+  logsEmpty: '暂无日志',
+  logOpened: '打开 {name} 的详情',
+  logProbeOk: '连接探测成功 · {ms}ms · {count} 个工具',
+  logProbeFail: '连接探测失败：{error}',
+  logInspectOk: '读取服务信息 · {ms}ms · 提示 {prompts} · 资源 {resources}',
+  logInspectFail: '读取服务信息失败：{error}',
+  fieldStatus: '连接状态',
+  fieldTarget: '目标',
+  fieldPatch: '补丁文件',
+  fieldVersion: '服务版本',
+  loadingHint: '长时间停在“加载中”，可尝试停用后再启用；仍不行则重启一次 DSH。',
   errUnknown: '操作失败',
 }
 
@@ -170,6 +242,8 @@ export const en: McpManagerDict = {
   statusUnloading: 'Unloading',
   statusNotLoaded: 'Not loaded',
   toolCount: '{count} tools',
+  toolsShow: 'Show {count} tools',
+  toolsHide: 'Hide tools',
   bundleDefined: 'bundle-defined',
   reconnectOff: 'reconnect off',
   probeOk: '✓ Connected in {ms}ms · {count} tools',
@@ -206,5 +280,39 @@ export const en: McpManagerDict = {
   errDuplicateName: 'serverName is already used by another server',
   errInvalidConfig: 'Invalid MCP server configuration',
   errNotFound: 'MCP server entry not found',
+  back: 'Back',
+  tabOverview: 'Overview',
+  tabTools: 'Tools',
+  tabPrompts: 'Prompts',
+  tabResources: 'Resources',
+  tabLogs: 'Logs',
+  searchServers: 'Search servers…',
+  searchTools: 'Search tools…',
+  filterConnected: 'Connected only',
+  badgeStreaming: 'streaming',
+  noTools: 'No tools on this connection',
+  noPrompts: 'This server provides no prompts',
+  noResources: 'This server provides no resources',
+  noMatch: 'No matches',
+  noParams: 'No parameters',
+  description: 'Description',
+  inputSchema: 'Input schema',
+  schemaName: 'Parameter',
+  schemaType: 'Type',
+  schemaDesc: 'Description',
+  schemaDefault: ' (default {value})',
+  inspectLoading: 'Reading from server…',
+  inspectFailed: 'Read failed: {error}',
+  logsEmpty: 'No log entries',
+  logOpened: 'Opened {name} details',
+  logProbeOk: 'Probe ok · {ms}ms · {count} tools',
+  logProbeFail: 'Probe failed: {error}',
+  logInspectOk: 'Inspected server · {ms}ms · {prompts} prompts · {resources} resources',
+  logInspectFail: 'Inspect failed: {error}',
+  fieldStatus: 'Status',
+  fieldTarget: 'Target',
+  fieldPatch: 'Patch file',
+  fieldVersion: 'Server version',
+  loadingHint: 'Stuck on loading? Disable and enable again; if that fails, restart DSH.',
   errUnknown: 'Operation failed',
 }

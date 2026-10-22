@@ -35,7 +35,7 @@ import {
   updateMcpConfig,
 } from './patch.ts'
 import { entryIdTaken, listMcpServers, normalizeEntryId, serverNameTaken } from './status.ts'
-import { probeServer } from './probe.ts'
+import { inspectServer, probeServer } from './probe.ts'
 import { validateMcpConfig } from './validate.ts'
 import type { McpEndpoint, McpProbeResult, McpServerConfig } from './shared.ts'
 
@@ -201,33 +201,43 @@ async function dispatch(
     }
     case 'probe': {
       const { id } = payload as { id: string }
-      let config: McpServerConfig | undefined
-      for (const entry of ctx.loader.entries()) {
-        if (entry.options.group) continue
-        if (normalizeEntryId(entry.id) === id) {
-          const raw = (entry.options.config ?? {}) as Record<string, unknown>
-          config = {
-            serverName: String(raw['serverName'] ?? ''),
-            transport: raw['transport'] === 'stdio' ? 'stdio' : 'streamable-http',
-            url: typeof raw['url'] === 'string' ? raw['url'] : undefined,
-            command: typeof raw['command'] === 'string' ? raw['command'] : undefined,
-            args: Array.isArray(raw['args']) ? raw['args'] as string[] : undefined,
-            env: isRecord(raw['env']) ? raw['env'] as Record<string, string> : undefined,
-            cwd: typeof raw['cwd'] === 'string' ? raw['cwd'] : undefined,
-            headers: isRecord(raw['headers']) ? raw['headers'] as Record<string, string> : undefined,
-          }
-          break
-        }
-      }
+      const config = serverConfigOf(ctx, id)
       if (config === undefined) {
         return fail('not-found', `No MCP server entry with id "${id}"`)
       }
-      const result: McpProbeResult = await probeServer(config)
-      return ok(result)
+      return ok(await probeServer(config))
+    }
+    case 'inspect': {
+      const { id } = payload as { id: string }
+      const config = serverConfigOf(ctx, id)
+      if (config === undefined) {
+        return fail('not-found', `No MCP server entry with id "${id}"`)
+      }
+      return ok(await inspectServer(config))
     }
     default:
       return fail('unknown-endpoint', `Unknown endpoint ${String(endpoint)}`)
   }
+}
+
+/** Resolve one live mcp-client entry's config by its file-level id. */
+function serverConfigOf(ctx: Context, id: string): McpServerConfig | undefined {
+  for (const entry of ctx.loader.entries()) {
+    if (entry.options.group) continue
+    if (normalizeEntryId(entry.id) !== id) continue
+    const raw = (entry.options.config ?? {}) as Record<string, unknown>
+    return {
+      serverName: String(raw['serverName'] ?? ''),
+      transport: raw['transport'] === 'stdio' ? 'stdio' : 'streamable-http',
+      url: typeof raw['url'] === 'string' ? raw['url'] : undefined,
+      command: typeof raw['command'] === 'string' ? raw['command'] : undefined,
+      args: Array.isArray(raw['args']) ? raw['args'] as string[] : undefined,
+      env: isRecord(raw['env']) ? raw['env'] as Record<string, string> : undefined,
+      cwd: typeof raw['cwd'] === 'string' ? raw['cwd'] : undefined,
+      headers: isRecord(raw['headers']) ? raw['headers'] as Record<string, string> : undefined,
+    }
+  }
+  return undefined
 }
 
 function operationError(

@@ -3,11 +3,10 @@
  *
  * Every MCP server is one `@deepseek-ai/dsh-mcp-client` plugin entry in the
  * loader composition. Its lifecycle phase (mirrored from the Cordis FiberState
- * const enum) plus the number of `mcp__<serverName>__*` tools it currently has
- * registered on the tool registry make up the observable "connection status":
- * a server that successfully connected and synchronized its tool list is
- * `active` with `toolCount > 0`; a disabled entry reports `pending`/`null`; a
- * failing server reports `failed`.
+ * const enum) plus the tools it currently has registered on the tool registry
+ * make up the observable "connection status": a server that successfully
+ * connected and synchronized its tool list is `active` with `toolCount > 0`;
+ * a disabled entry reports `pending`/`null`; a failing server reports `failed`.
  *
  * @module dsh-mcp-manager/status
  */
@@ -21,6 +20,7 @@ import {
   type FiberPhase,
   type McpServerConfig,
   type McpServerInfo,
+  type McpToolInfo,
 } from './shared.ts'
 
 /** Runtime mirror of the cross-package Cordis FiberState const enum. */
@@ -79,15 +79,35 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value)
 }
 
+/**
+ * Project the live tool catalog registered under a server namespace.
+ *
+ * The registry already carries what the model sees, so the manager can show
+ * descriptions and input schemas without opening another MCP connection.
+ *
+ * @param ctx - plugin context carrying the tool registry.
+ * @param serverName - the server's stable namespace.
+ * @returns one entry per `mcp__<serverName>__*` tool, sorted by raw name.
+ */
+export function serverTools(ctx: Context, serverName: string): McpToolInfo[] {
+  if (serverName === '') return []
+  const prefix = `mcp__${serverName}__`
+  const tools: McpToolInfo[] = []
+  for (const schema of ctx.tools.schemas()) {
+    if (!schema.name.startsWith(prefix)) continue
+    const parameters = schema.parameters as unknown
+    tools.push({
+      name: schema.name.slice(prefix.length),
+      ...(typeof schema.description === 'string' ? { description: schema.description } : {}),
+      ...(isRecord(parameters) ? { parameters } : {}),
+    })
+  }
+  return tools.sort((a, b) => a.name.localeCompare(b.name))
+}
+
 /** Count tools registered on the harness registry under a server namespace. */
 export function countServerTools(ctx: Context, serverName: string): number {
-  if (serverName === '') return 0
-  const prefix = `mcp__${serverName}__`
-  let count = 0
-  for (const schema of ctx.tools.schemas()) {
-    if (schema.name.startsWith(prefix)) count += 1
-  }
-  return count
+  return serverTools(ctx, serverName).length
 }
 
 /** Enumerate every live mcp-client instance with its status projection. */
@@ -99,12 +119,14 @@ export function listMcpServers(ctx: Context, userManaged: (id: string) => boolea
     const config = toServerConfig(entry.options.config)
     const phase = entry.fiber === undefined ? null : FIBER_PHASE[entry.fiber.state] ?? null
     const id = normalizeEntryId(entry.id)
+    const tools = serverTools(ctx, config.serverName)
     servers.push({
       ...config,
       id,
       enabled: !entry.disabled,
       fiberPhase: phase,
-      toolCount: countServerTools(ctx, config.serverName),
+      toolCount: tools.length,
+      tools,
       userManaged: userManaged(id),
     })
   }

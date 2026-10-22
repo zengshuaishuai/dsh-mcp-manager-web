@@ -1,6 +1,6 @@
 {
   "name": "@zengshuaishuai/dsh-mcp-manager-web",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "MCP visual manager for DeepSeek Harness: list/detail UI with live tool schemas, prompts, resources and connection status.",
   "type": "module",
   "main": "lib/index.js",

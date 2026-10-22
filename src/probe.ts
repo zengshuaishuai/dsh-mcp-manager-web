@@ -7,7 +7,7 @@
  * cleanly. For stdio servers the child process is spawned and killed here;
  * for streamable-http it is a short-lived HTTP session.
  *
- * @module dsh-mcp-manager/probe
+ * @module dsh-mcp-manager-web/probe
  */
 import { Client } from '@modelcontextprotocol/sdk/client/index.js'
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js'
@@ -120,7 +120,7 @@ export async function probeServer(
 ): Promise<McpProbeResult> {
   const started = Date.now()
   const client = new Client(
-    { name: 'dsh-mcp-manager-probe', version: '0.1.0' },
+    { name: 'dsh-mcp-manager-web-probe', version: '0.1.0' },
     { capabilities: {} },
   )
   try {
@@ -164,7 +164,7 @@ export async function inspectServer(
 ): Promise<McpInspectResult> {
   const started = Date.now()
   const client = new Client(
-    { name: 'dsh-mcp-manager-inspect', version: '0.1.0' },
+    { name: 'dsh-mcp-manager-web-inspect', version: '0.1.0' },
     { capabilities: {} },
   )
   const empty = (): McpInspectResult => ({

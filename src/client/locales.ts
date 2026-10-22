@@ -3,7 +3,7 @@
  * locale (zh/en) selects the dictionary automatically; technical identifiers
  * (serverName, transport names, config keys) stay untranslated in both.
  *
- * @module dsh-mcp-manager/client/locales
+ * @module dsh-mcp-manager-web/client/locales
  */
 
 /** Locale namespace for this plugin's copy. */

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Removes a manually-added dsh-mcp-manager mount row from a profile's
+ * Removes a manually-added dsh-mcp-manager-web mount row from a profile's
  * `cordis.patch.yml` (top-level `- insert:` blocks or id-targeted override
  * rows whose id is `mcp-manager`). Everything else — comments, other
  * servers, the file header — is preserved verbatim. Idempotent; a missing
@@ -9,7 +9,7 @@
  * Used by the one-click installers so bundle-based mounting can never
  * double-mount the plugin alongside an older manual entry.
  *
- * @module dsh-mcp-manager/scripts/remove-manual-mount
+ * @module dsh-mcp-manager-web/scripts/remove-manual-mount
  */
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 
@@ -48,4 +48,4 @@ while (i < lines.length) {
 
 while (out.length > 0 && out[out.length - 1].trim() === '') out.pop()
 writeFileSync(file, `${out.join('\n')}\n`)
-console.log(`[dsh-mcp-manager] removed manual mcp-manager mount row from ${file}`)
+console.log(`[dsh-mcp-manager-web] removed manual mcp-manager mount row from ${file}`)

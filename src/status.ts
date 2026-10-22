@@ -8,7 +8,7 @@
  * connected and synchronized its tool list is `active` with `toolCount > 0`;
  * a disabled entry reports `pending`/`null`; a failing server reports `failed`.
  *
- * @module dsh-mcp-manager/status
+ * @module dsh-mcp-manager-web/status
  */
 import type { Context } from '@deepseek-ai/cordis'
 // Type-only: loads the `Context { tools }` and `Context { loader }`

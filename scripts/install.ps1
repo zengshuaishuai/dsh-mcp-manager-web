@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    One-click installer for dsh-mcp-manager (DeepSeek Harness web profile).
+    One-click installer for dsh-mcp-manager-web (DeepSeek Harness web profile).
 
 .DESCRIPTION
     Installs the plugin into ~/.dsh/profiles/web and auto-mounts it through
@@ -11,10 +11,10 @@
         powershell -ExecutionPolicy Bypass -File .\scripts\install.ps1
 
     Or for the published npm package (also the `irm | iex` path):
-        powershell -ExecutionPolicy Bypass -File .\scripts\install.ps1 -Package @zengshuaishuai/dsh-mcp-manager@0.1.0
+        powershell -ExecutionPolicy Bypass -File .\scripts\install.ps1 -Package @zengshuaishuai/dsh-mcp-manager-web@0.1.0
 
 .PARAMETER Package
-    npm spec to install (default: dsh-mcp-manager). Ignored when a local
+    npm spec to install (default: dsh-mcp-manager-web). Ignored when a local
     checkout is detected (run from the repo) or -Path is given.
 
 .PARAMETER Path
@@ -30,7 +30,7 @@
     .\scripts\install.ps1 -Restart
 #>
 param(
-    [string]$Package = '@zengshuaishuai/dsh-mcp-manager',
+    [string]$Package = '@zengshuaishuai/dsh-mcp-manager-web',
     [string]$Path = '',
     [switch]$Restart,
     [switch]$DryRun
@@ -38,7 +38,7 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
-function Step([string]$message) { Write-Host "[dsh-mcp-manager] $message" }
+function Step([string]$message) { Write-Host "[dsh-mcp-manager-web] $message" }
 function Run([string]$exe, [string[]]$argsList) {
     if ($DryRun) {
         Step "DRY-RUN: $exe $($argsList -join ' ')"
@@ -75,7 +75,7 @@ $isLocalRepo = $false
 if (Test-Path (Join-Path $repoRoot 'package.json')) {
     try {
         $manifest = Get-Content (Join-Path $repoRoot 'package.json') -Raw | ConvertFrom-Json
-        $isLocalRepo = $manifest.name -eq '@zengshuaishuai/dsh-mcp-manager'
+        $isLocalRepo = $manifest.name -eq '@zengshuaishuai/dsh-mcp-manager-web'
     } catch { $isLocalRepo = $false }
 }
 $spec = if ($isLocalRepo) { "link:$repoRoot" } else { $Package }

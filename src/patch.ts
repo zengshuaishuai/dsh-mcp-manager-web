@@ -13,7 +13,7 @@
  *   - `{ id, name, config?, disabled? }`     — override/disable a composed entry;
  *   - `!!js` scalar expressions round-trip unchanged.
  *
- * @module dsh-mcp-manager/patch
+ * @module dsh-mcp-manager-web/patch
  */
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { homedir } from 'node:os'
@@ -75,7 +75,7 @@ const JsExprType = new yaml.Type('tag:yaml.org,2002:js', {
 const ENTRY_LIST_SCHEMA = yaml.JSON_SCHEMA.extend(JsExprType)
 
 /** Header comment written ahead of the managed entry rows. */
-const PATCH_HEADER = `# MCP servers managed by the dsh-mcp-manager plugin.
+const PATCH_HEADER = `# MCP servers managed by the dsh-mcp-manager-web plugin.
 # Format: a top-level YAML array of loader patch entries (\`!!js\` expressions
 # allowed). Edit here, or use the MCP Manager panel in the web GUI.
 `

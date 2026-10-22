@@ -1,9 +1,9 @@
 /**
  * Types and constants shared by the host half and the client half of the
- * dsh-mcp-manager plugin. This module is type-only for the client build
+ * dsh-mcp-manager-web plugin. This module is type-only for the client build
  * (values are used by the host only, the client imports types).
  *
- * @module dsh-mcp-manager/shared
+ * @module dsh-mcp-manager-web/shared
  */
 
 /** The package that implements an MCP server bridge in the harness. */

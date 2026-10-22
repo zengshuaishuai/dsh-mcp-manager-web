@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Minimal MCP stdio server used to exercise dsh-mcp-manager end to end:
+ * Minimal MCP stdio server used to exercise dsh-mcp-manager-web end to end:
  *   node test/fixtures/mcp-test-server.mjs
  *
  * Speaks the Model Context Protocol (initialize / tools/list / tools/call /

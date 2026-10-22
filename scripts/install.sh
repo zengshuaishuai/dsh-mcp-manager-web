@@ -1,18 +1,18 @@
 #!/usr/bin/env bash
 #
-# One-click installer for dsh-mcp-manager (DeepSeek Harness web profile).
+# One-click installer for dsh-mcp-manager-web (DeepSeek Harness web profile).
 # Idempotent — safe to re-run.
 #
 # Run from a local clone (installs that clone via link:):
 #   bash scripts/install.sh
 #
 # Or for the published npm package (also the curl | bash path):
-#   bash scripts/install.sh dsh-mcp-manager@0.1.0
+#   bash scripts/install.sh dsh-mcp-manager-web@0.1.0
 #
 # Flags: --restart (best-effort relaunch of the desktop app), --dry-run.
 set -euo pipefail
 
-PACKAGE="${1:-@zengshuaishuai/dsh-mcp-manager}"
+PACKAGE="${1:-@zengshuaishuai/dsh-mcp-manager-web}"
 RESTART=0
 DRY_RUN=0
 for arg in "${@:2}"; do
@@ -30,7 +30,7 @@ PATCH_FILE="$PROFILE_DIR/cordis.patch.yml"
 WORKSPACE_FILE="$PROFILE_DIR/pnpm-workspace.yaml"
 CLEANUP="$SCRIPT_DIR/remove-manual-mount.mjs"
 
-step() { echo "[dsh-mcp-manager] $*"; }
+step() { echo "[dsh-mcp-manager-web] $*"; }
 run() {
   if [ "$DRY_RUN" -eq 1 ]; then step "DRY-RUN: $*"; return 0; fi
   "$@"
@@ -55,7 +55,7 @@ resolve_dsh() {
 IS_LOCAL_REPO=0
 if [ -f "$REPO_ROOT/package.json" ]; then
   NAME="$(node -e "process.stdout.write(require('$REPO_ROOT/package.json').name || '')" 2>/dev/null || true)"
-  [ "$NAME" = "@zengshuaishuai/dsh-mcp-manager" ] && IS_LOCAL_REPO=1
+  [ "$NAME" = "@zengshuaishuai/dsh-mcp-manager-web" ] && IS_LOCAL_REPO=1
 fi
 if [ "$IS_LOCAL_REPO" -eq 1 ]; then
   SPEC="link:$REPO_ROOT"
@@ -68,7 +68,7 @@ fi
 step "Installing from $SOURCE_LABEL"
 step "Target profile: $PROFILE_DIR"
 if [ ! -d "$PROFILE_DIR" ]; then
-  echo "[dsh-mcp-manager] Profile not found at $PROFILE_DIR — run 'dsh web' once to initialize it, then re-run." >&2
+  echo "[dsh-mcp-manager-web] Profile not found at $PROFILE_DIR — run 'dsh web' once to initialize it, then re-run." >&2
   exit 1
 fi
 
@@ -92,7 +92,7 @@ fi
 #    and adds the package to dsh.profile.bundles via its dsh.bundle.patch).
 DSH_INVOKE="$(resolve_dsh || true)"
 if [ -z "$DSH_INVOKE" ]; then
-  echo "[dsh-mcp-manager] No dsh CLI found — install Node.js >= 20 (npx) or add dsh to PATH." >&2
+  echo "[dsh-mcp-manager-web] No dsh CLI found — install Node.js >= 20 (npx) or add dsh to PATH." >&2
   exit 1
 fi
 case "${DSH_INVOKE%%:*}" in
@@ -115,9 +115,9 @@ if [ "$RESTART" -eq 1 ]; then
     pkill -f 'DeepSeek Harness' 2>/dev/null || true
     sleep 2
     if command -v open >/dev/null 2>&1; then
-      open -a 'DeepSeek Harness' 2>/dev/null && step 'DSH restarted.' || echo '[dsh-mcp-manager] restart DSH manually.' >&2
+      open -a 'DeepSeek Harness' 2>/dev/null && step 'DSH restarted.' || echo '[dsh-mcp-manager-web] restart DSH manually.' >&2
     else
-      echo '[dsh-mcp-manager] restart DSH manually.' >&2
+      echo '[dsh-mcp-manager-web] restart DSH manually.' >&2
     fi
   fi
 fi

@@ -3,7 +3,7 @@
  * mirrors the `dsh-mcp-client` schema so the panel rejects invalid input with
  * the same semantics the plugin would enforce at load.
  *
- * @module dsh-mcp-manager/validate
+ * @module dsh-mcp-manager-web/validate
  */
 import type { McpFieldErrors, McpServerConfig, McpTransport } from './shared.ts'
 

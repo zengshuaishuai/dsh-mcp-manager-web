@@ -1,4 +1,4 @@
-# dsh-mcp-manager
+# dsh-mcp-manager-web
 
 **DeepSeek Harness 的 MCP 可视化管理器**：在 **设置 → MCP** 里查看、添加、编辑、启停 MCP 服务器，并且能点进单个服务，看到它注册了哪些工具、每个工具的参数结构，以及服务端提供的提示（prompts）和资源（resources）。
 
@@ -44,8 +44,8 @@
 ### 方式一：本地源码（`link:`）
 
 ```sh
-git clone https://github.com/zengshuaishuai/dsh-mcp-manager.git dsh-mcp-manager
-cd dsh-mcp-manager
+git clone https://github.com/zengshuaishuai/dsh-mcp-manager-web.git dsh-mcp-manager-web
+cd dsh-mcp-manager-web
 # 仓库已包含构建产物 lib/，只有改过 src/ 才需要重新构建：
 node scripts/build.mjs
 
@@ -55,7 +55,7 @@ dsh plugin --profile desktop add "link:$PWD"
 ### 方式二：直接装 GitHub 源
 
 ```sh
-dsh plugin --profile desktop add github:zengshuaishuai/dsh-mcp-manager
+dsh plugin --profile desktop add github:zengshuaishuai/dsh-mcp-manager-web
 ```
 
 `lib/` 已入库，GitHub 源安装不需要本地构建。
@@ -71,7 +71,7 @@ dsh plugin --profile desktop add github:zengshuaishuai/dsh-mcp-manager
 
 ```yaml
 - id: mcp-manager
-  name: "@zengshuaishuai/dsh-mcp-manager"
+  name: "@zengshuaishuai/dsh-mcp-manager-web"
   config:
     patchFile: /Users/you/.dsh/profiles/desktop/cordis.patch.yml
 ```

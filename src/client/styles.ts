@@ -6,10 +6,10 @@
  * Layout keeps the MCP settings page airy and scannable: roomy cards, a clear
  * status line, one target line, one muted meta line, and spaced actions.
  *
- * @module dsh-mcp-manager/client/styles
+ * @module dsh-mcp-manager-web/client/styles
  */
 
-const STYLE_ID = 'dsh-mcp-manager-styles'
+const STYLE_ID = 'dsh-mcp-manager-web-styles'
 
 const CSS = `
 .dshmcp-section{max-width:720px;width:100%;display:flex;flex-direction:column;gap:14px;color:var(--dsw-alias-label-primary,#e6e8eb);font:13px/1.55 system-ui,-apple-system,'Segoe UI',sans-serif}

@@ -1,5 +1,5 @@
 /**
- * dsh-mcp-manager — browser half.
+ * dsh-mcp-manager-web — browser half.
  *
  * Registers an "MCP" page in the Settings panel (a `settings.section` entry
  * beside 通用设置 / 模型 / 插件 / Agent 预设), hosting the server list,
@@ -8,7 +8,7 @@
  * over the loopback-only `/mcp-manager` Connection RPC channel registered by
  * the node half; the browser never touches the host filesystem directly.
  *
- * @module dsh-mcp-manager/client
+ * @module dsh-mcp-manager-web/client
  */
 import type { ClientContext } from '@deepseek-ai/dsh-client-runtime/client'
 // Type-only: pulls the slot-registry Context merge (ctx.slots) and the

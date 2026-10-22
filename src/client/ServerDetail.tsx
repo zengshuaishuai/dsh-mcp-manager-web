@@ -7,7 +7,7 @@
  * so it costs no extra connection. Prompts and resources are not registered by
  * `dsh-mcp-client`, so those tabs ask the host to inspect the server on demand.
  *
- * @module dsh-mcp-manager/client/ServerDetail
+ * @module dsh-mcp-manager-web/client/ServerDetail
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { ClientContext } from '@deepseek-ai/dsh-client-runtime/client'

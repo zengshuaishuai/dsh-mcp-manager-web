@@ -10,7 +10,7 @@
  *
  * All data flows through the typed RPC client to the host half.
  *
- * @module dsh-mcp-manager/client/McpManagerSection
+ * @module dsh-mcp-manager-web/client/McpManagerSection
  */
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react'
 import type { ClientContext } from '@deepseek-ai/dsh-client-runtime/client'

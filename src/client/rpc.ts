@@ -2,7 +2,7 @@
  * Typed client for the `/mcp-manager` host RPC channel. Thin wrapper over
  * `ctx.connection.rpc.call` with the host's reply envelope.
  *
- * @module dsh-mcp-manager/client/rpc
+ * @module dsh-mcp-manager-web/client/rpc
  */
 import type { ClientContext } from '@deepseek-ai/dsh-client-runtime/client'
 import type { ClientConnectionRpc } from '@deepseek-ai/dsh-client-connection/client'

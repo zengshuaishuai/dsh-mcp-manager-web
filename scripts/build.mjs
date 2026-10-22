@@ -1,5 +1,5 @@
 /**
- * Build script for dsh-mcp-manager.
+ * Build script for dsh-mcp-manager-web.
  *
  * Produces two artifacts:
  *   lib/index.js   — node half (ESM, deps external: resolved at runtime from
@@ -14,7 +14,7 @@
  * lib/types outputs, or export DSH_PACKAGES_DIR and run
  * `node scripts/build.mjs --gen-tsconfig` to regenerate the paths block).
  *
- * @module dsh-mcp-manager/scripts/build
+ * @module dsh-mcp-manager-web/scripts/build
  */
 import { build } from 'esbuild'
 import { execFileSync } from 'node:child_process'
@@ -54,7 +54,7 @@ async function buildHost() {
     sourcemap: true,
     logLevel: 'info',
   })
-  console.log('[dsh-mcp-manager] host bundle -> lib/index.js')
+  console.log('[dsh-mcp-manager-web] host bundle -> lib/index.js')
 }
 
 async function buildClient() {
@@ -88,7 +88,7 @@ async function buildClient() {
     (_, name) => `module.exports = ${name};`,
   )
   if (code === js.text) {
-    console.warn('[dsh-mcp-manager] warning: __toCommonJS unwrap pattern did not match; check bundle exports')
+    console.warn('[dsh-mcp-manager-web] warning: __toCommonJS unwrap pattern did not match; check bundle exports')
   }
   const wrapped = [
     'window.__ModuleLoader__.load({',
@@ -108,20 +108,20 @@ async function buildClient() {
     writeFileSync(join(libDir, 'client.js.map'), map.text)
     writeFileSync(join(libDir, 'client.js'), `${wrapped}\n//# sourceMappingURL=client.js.map\n`)
   }
-  console.log('[dsh-mcp-manager] client bundle -> lib/client.js')
+  console.log('[dsh-mcp-manager-web] client bundle -> lib/client.js')
 }
 
 function typecheck() {
   const tsc = join(root, 'node_modules', '.bin', process.platform === 'win32' ? 'tsc.cmd' : 'tsc')
   if (!existsSync(tsc)) {
-    console.warn('[dsh-mcp-manager] tsc not found; run `pnpm install` to typecheck (skipping)')
+    console.warn('[dsh-mcp-manager-web] tsc not found; run `pnpm install` to typecheck (skipping)')
     return
   }
-  console.log('[dsh-mcp-manager] typecheck (tsc --noEmit)…')
+  console.log('[dsh-mcp-manager-web] typecheck (tsc --noEmit)…')
   execFileSync(tsc, ['-p', join(root, 'tsconfig.json'), '--noEmit'], { stdio: 'inherit' })
 }
 
 await buildHost()
 await buildClient()
 if (args.includes('--typecheck')) typecheck()
-console.log('[dsh-mcp-manager] build complete')
+console.log('[dsh-mcp-manager-web] build complete')

@@ -1,5 +1,5 @@
 {
-  "name": "@zengshuaishuai/dsh-mcp-manager",
+  "name": "@zengshuaishuai/dsh-mcp-manager-web",
   "version": "0.2.0",
   "description": "MCP visual manager for DeepSeek Harness: list/detail UI with live tool schemas, prompts, resources and connection status.",
   "type": "module",
@@ -62,9 +62,9 @@
     ]
   },
   "author": "zengshuaishuai",
-  "homepage": "https://github.com/zengshuaishuai/dsh-mcp-manager#readme",
+  "homepage": "https://github.com/zengshuaishuai/dsh-mcp-manager-web#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/zengshuaishuai/dsh-mcp-manager.git"
+    "url": "git+https://github.com/zengshuaishuai/dsh-mcp-manager-web.git"
   }
 }

@@ -1,5 +1,5 @@
 /**
- * dsh-mcp-manager — node half.
+ * dsh-mcp-manager-web — node half.
  *
  * A visual MCP manager for the DeepSeek Harness web GUI:
  *
@@ -17,7 +17,7 @@
  * Config (row config in cordis.patch.yml; all optional):
  *   patchFile   absolute path of the user patch layer to edit
  *               (default: $DSH_HOME/profiles/web/cordis.patch.yml)
- * @module dsh-mcp-manager
+ * @module dsh-mcp-manager-web
  */
 import { existsSync } from 'node:fs'
 import type { Context } from '@deepseek-ai/cordis'

@@ -1,8 +1,8 @@
-# dsh-mcp-manager bundle layer: this file ships inside the npm package and is
+# dsh-mcp-manager-web bundle layer: this file ships inside the npm package and is
 # applied automatically when the package is registered as a profile bundle
-# (`dsh plugin --profile web add dsh-mcp-manager`). It mounts the plugin's
+# (`dsh plugin --profile web add dsh-mcp-manager-web`). It mounts the plugin's
 # host entry; the browser half is discovered from the same entry's
 # `dsh.client` declaration.
 - insert:
     - id: mcp-manager
-      name: '@zengshuaishuai/dsh-mcp-manager'
+      name: '@zengshuaishuai/dsh-mcp-manager-web'

@@ -1,7 +1,7 @@
 /**
  * Inline SVG icon set (no external icon dependency).
  *
- * @module dsh-mcp-manager/client/icons
+ * @module dsh-mcp-manager-web/client/icons
  */
 
 interface IconProps {

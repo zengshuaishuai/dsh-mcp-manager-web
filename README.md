@@ -1,246 +1,138 @@
 # dsh-mcp-manager
 
-<!-- Hero -->
-<div align="center">
-  <b style="font-size: 1.15em;">MCP 可视化管理器：装没装、连没连，一目了然</b><br /><br />
-  <code>查看列表</code> <code>新增删除</code> <code>启用停用</code> <code>连接状态</code> <code>连接测试</code> <code>中英双语</code><br />
-  <code>DeepSeek Harness</code> <code>DSH Desktop</code><br /><br />
-  <b>设置 → MCP</b> 一站管理 DeepSeek Harness 里的所有 MCP 服务器，<br />
-  无需再手改 <code>cordis.patch.yml</code> —— 所有修改即改即生效（HMR 热应用）。
-</div>
+**DeepSeek Harness 的 MCP 可视化管理器**：在 **设置 → MCP** 里查看、添加、编辑、启停 MCP 服务器，并且能点进单个服务，看到它注册了哪些工具、每个工具的参数结构，以及服务端提供的提示（prompts）和资源（resources）。
 
-<div align="center">
+> 本仓库是 [Js2Hou/dsh-mcp-manager](https://github.com/Js2Hou/dsh-mcp-manager) 的**二次开发分支**，在原版基础上重做了列表与详情界面，并新增了工具目录、提示/资源读取等能力。原项目版权归原作者所有，见 [LICENSE](LICENSE)。
 
-[![npm version](https://img.shields.io/npm/v/@js2hou/dsh-mcp-manager?logo=npm&color=cb3837)](https://www.npmjs.com/package/@js2hou/dsh-mcp-manager)
-[![License](https://img.shields.io/github/license/Js2Hou/dsh-mcp-manager)](LICENSE)
-[![DSH Desktop](https://img.shields.io/badge/DSH%20Desktop-ready-000000)](https://github.com/anywhere-labs/deepseek-harness-desktop)
+---
 
-<!-- listings:start -->
-[![dsh-market](https://img.shields.io/badge/dsh--market-%E2%9C%93-3fb950)](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin)
-[![dsh-plugin-marketplace](https://img.shields.io/badge/dsh--plugin--marketplace-%E2%9C%93-3fb950)](https://github.com/AwesomeHou/dsh-plugin-marketplace)
-[![DSH 1024Store](https://img.shields.io/badge/DSH%201024Store-%E2%9C%93-3fb950)](https://github.com/imsai-sh/awesome-deepseek-harness-plugins)
-[![dshfind](https://img.shields.io/badge/dshfind-%E2%9C%93-3fb950)](https://github.com/hikariming/dshfind)
-<!-- listings:end -->
+## 功能
 
+### 服务器列表
 
+- 紧凑行式列表：状态圆点（已连接 / 告警 / 失败 / 停用）、名称、服务版本、传输方式徽章（流式 / stdio）、工具数、启停开关
+- 顶部工具条：刷新、只看已连接、搜索服务器、添加服务器
+- 点任意一行进入详情页
 
+### 详情页
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-</div>
-
-<div align="center">
-  🌏 <a href="./README.md"><b>中文</b></a> · <a href="./README_EN.md">English</a>
-</div>
-
-## ✨ 功能一览
-
-- **📋 服务器列表**：列出所有已安装/启用的 MCP 服务器（`@deepseek-ai/dsh-mcp-client` 实例）——`serverName`、传输方式（`stdio` / `streamable-http`）、URL / 命令、启用状态、加载阶段、已注册工具数
-- **➕ 新增 / ➖ 删除**：表单添加 MCP 服务器（stdio 与 streamable-http，支持 env / headers / args / 超时 / failOnStartupError），带格式与重名校验；一键删除
-- **🔌 启用 / 停用**：随时切换，工具随之热连接 / 热断开
-- **📶 连接状态**：每台服务器实时状态胶囊（Connected · N tools / Failed / Loading / Disabled）+ 独立 **Test** 探测（`initialize` + `tools/list`，报告延迟与工具数）
-- **✏️ 编辑**：在被编辑卡片原位展开表单，保存即应用
-- **🌏 多语言**：界面文案跟随 DSH 语言（zh / en）实时切换
-- **💾 持久化**：所有修改写入 profile 的 `cordis.patch.yml`，重启后保留；页面底部显示文件路径
-
-## 🚀 安装
-
-插件已收录至 **[dsh-market](https://github.com/dsh-market/dsh-market)** 与 **[dsh-plugin-marketplace](https://github.com/AwesomeHou/dsh-plugin-marketplace)**。
-
-**前置**：DSH 已装好（`dsh web` 能正常运行）。
-
-### 方式一 · AI Agent 安装
-
-> 告诉 Agent：「请安装 dsh-mcp-manager 插件，插件仓库是 https://github.com/Js2Hou/dsh-mcp-manager」
-
-### 方式二 · 插件市场安装（推荐）
-
-任选一个插件市场：
-
-- **[DSH Desktop](https://github.com/anywhere-labs/deepseek-harness-desktop)（社区桌面版）**：内置插件市场，选 **DSH 1024Store** 或 **dshfind** 源，搜索 `js2hou/dsh-mcp-manager` 安装（同名插件较多，认准作者 **Js2Hou**）；
-- **[dsh-market](https://github.com/dsh-market/dsh-market)**：搜索 `js2hou/dsh-mcp-manager` 一键安装；
-- **[dsh-plugin-marketplace](https://github.com/AwesomeHou/dsh-plugin-marketplace)**：搜索 `js2hou/dsh-mcp-manager` 一键安装。
-
-### 方式三 · dsh 命令安装
-
-```sh
-dsh plugin --profile web add @js2hou/dsh-mcp-manager
-```
-
-也可 **GitHub 源安装**（构建产物 `lib/` 已入库，无需本地构建）：
-
-```sh
-dsh plugin --profile web add github:Js2Hou/dsh-mcp-manager
-```
-
-<details>
-<summary><b>脚本安装</b>（一键脚本安装：自动处理新版放行与残留清理，幂等）</summary>
-
-**macOS / Linux**（Windows 装了 Git Bash 或 WSL 也可）：
-
-```sh
-curl -fsSL https://raw.githubusercontent.com/Js2Hou/dsh-mcp-manager/main/scripts/install.sh | bash
-```
-
-**Windows（PowerShell 5.1+ / pwsh）**：
-
-```powershell
-irm https://raw.githubusercontent.com/Js2Hou/dsh-mcp-manager/main/scripts/install.ps1 | iex
-```
-
-</details>
-
-装完**硬刷新浏览器**（Cmd/Ctrl+Shift+R），打开 **设置 → MCP** 即可看到管理页。若未出现 MCP 页签，重启一次 DSH（host 半首次挂载需要）。
-
-<details>
-<summary><b>手动安装 / 本地开发</b></summary>
-
-**macOS / Linux（bash）**：
-
-```sh
-cd ~/.dsh/profiles/web
-
-# ① 放行「发布不足 24h」的新版本（装老版本可跳过；若已有该键，把下面那行并入其下即可）
-printf '\nminimumReleaseAgeExclude:\n  - @js2hou/dsh-mcp-manager\n' >> pnpm-workspace.yaml
-
-# ② 安装并自动挂载（npm 包；本地 checkout 请用 link: 绝对路径）
-npx -y --package @deepseek-ai/dsh dsh plugin --profile web add @js2hou/dsh-mcp-manager
-```
-
-**Windows（PowerShell）**：
-
-```powershell
-cd ~\.dsh\profiles\web
-
-# ① 放行新版本（一次性；若已有该键，把 - @js2hou/dsh-mcp-manager 并入其下即可）
-Add-Content -Path pnpm-workspace.yaml -Value "`nminimumReleaseAgeExclude:`n  - @js2hou/dsh-mcp-manager"
-
-# ② 安装并自动挂载
-npx -y --package @deepseek-ai/dsh dsh plugin --profile web add @js2hou/dsh-mcp-manager
-```
-
-> `dsh plugin --profile web add` 会自动：登记依赖 → 识别包内 `dsh.bundle.patch` → 注册进 `dsh.profile.bundles` 挂载，无需手改 `cordis.patch.yml`。
-
-**本地开发**：clone 仓库后在根目录执行 `bash scripts/install.sh`（Windows：`powershell -ExecutionPolicy Bypass -File .\scripts\install.ps1`），脚本检测到 checkout 会自动用 `link:` 方式安装到 `~/.dsh/profiles/web`；也可显式指定：`dsh plugin --profile web add "link:C:/绝对路径/dsh-mcp-manager"`。
-
-</details>
-
-<details>
-<summary><b>更新</b></summary>
-
-```sh
-dsh plugin --profile web add @js2hou/dsh-mcp-manager
-```
-
-或重跑一次一键脚本；也可把 `~/.dsh/profiles/web/package.json` 里的版本号改高后 `pnpm install`。本地 checkout 模式：`git pull` 后 `pnpm build`（client 改动硬刷新浏览器即可；host 改动需重启 DSH）。
-
-</details>
-
-<details>
-<summary><b>常见问题</b></summary>
-
-| 现象 | 原因与解决 |
+| 标签 | 内容 |
 |---|---|
-| 插件市场搜不到 | 市场数据每日同步。稍后再搜，或改用「方式三」dsh 命令安装。 |
-| 报 `minimum release age` / 版本不足 24h | 装的版本发布不足 24 小时。等 24h 或重跑一次（脚本会自动补 `minimumReleaseAgeExclude`）。 |
-| 报「找不到 profile 目录」 | 先跑一次 `dsh web`，让它初始化 `~/.dsh/profiles/web`。 |
-| 页面出现**两个 MCP 页签** | 双挂载：`~/.dsh/profiles/web/cordis.patch.yml` 还留着旧的手动挂载行，删掉那段 `- insert: ... mcp-manager ...`（脚本会自动清）。 |
-| 装完没看到 MCP 页签 | 硬刷新（Cmd/Ctrl+Shift+R）；仍没有就重启 DSH 一次（host 半首次挂载需要）。 |
-| Obsidian MCP 报 401 | 检查 headers 格式：应为 `Authorization: Bearer <api-key>`，不要带引号（表单已支持直接粘贴 `"Key": "value"` 自动去引号）。 |
-| 修改配置后未生效 | 本插件所有修改走 HMR 热应用，等 1–2 秒自动刷新；页面右上角可手动刷新。 |
+| **通用** | 连接状态、条目 ID、传输方式、目标地址 / 命令、serverName、工具数、服务版本、超时、补丁文件路径；测试 / 编辑 / 停用 / 删除 |
+| **工具** | 该服务注册到工具表里的全部工具（`mcp__<serverName>__*`），支持搜索；展开可见描述和**输入参数表**（参数名 / 类型 / 必填 / 说明 / 默认值） |
+| **提示** | 按需建立一条独立 MCP 连接读取 `prompts/list`；服务端未实现时显示为空 |
+| **资源** | 同上，读取 `resources/list`（名称 / URI / MIME 类型） |
+| **日志** | 本页的操作流水（打开详情、探测结果、读取提示/资源的结果），带时间戳 |
 
-</details>
+### 其他
 
-## 📖 使用说明
+- **添加 / 编辑 / 删除**：支持 `stdio`（command / args / env / cwd）与 `streamable-http`（url / headers），带 id、serverName、URL 等字段校验
+- **连接测试**：独立连接跑一次 `initialize + tools/list`，报告耗时与工具数
+- **中英双语**：界面文案跟随 DSH 当前语言
+- **深浅主题自适应**：颜色全部取自 DSH 的 `--dsw-*` token，不写死
+- **即改即生效**：所有修改写入 profile 的 `cordis.patch.yml`，由 harness 的 HMR 热应用（配置层面无需重启）
+- **MCP 图标**：设置导航里把未知插件默认的齿轮换成了 MCP 插头图标（浏览器端运行时替换）
 
-打开 **设置 → MCP**：
+## 安装
 
-- **添加服务器**：填写 条目 ID、`serverName`、传输方式及对应字段（`streamable-http` 填 URL；`stdio` 填 command / args / env / cwd）。面板做格式与重名校验，重复的 id / serverName 会被拒绝。
-- 每张卡片显示实时状态、连接目标与工具数；可执行 **启用 / 停用**、**测试**（连接探测）、**编辑**（原位表单）、**删除**。
-- 页面底部显示正在编辑的补丁文件路径。
+前置：DSH 已经能正常启动（`dsh web` 或 DSH Desktop）。
 
-## ⚙️ 配置
+> 桌面版（Electron）的 profile 名是 `desktop`，Web 版通常是 `web`。下面命令里的 `--profile desktop` 按你的实际情况替换。
 
-插件自身在 loader 中的行配置支持一个可选字段：
+### 方式一：本地源码（`link:`）
 
-| 字段 | 说明 |
+```sh
+git clone <本仓库地址> dsh-mcp-manager
+cd dsh-mcp-manager
+# 仓库已包含构建产物 lib/，只有改过 src/ 才需要重新构建：
+node scripts/build.mjs
+
+dsh plugin --profile desktop add "link:$PWD"
+```
+
+### 方式二：直接装 GitHub 源
+
+```sh
+dsh plugin --profile desktop add github:<你的账号>/<仓库名>
+```
+
+`lib/` 已入库，GitHub 源安装不需要本地构建。
+
+### 生效
+
+安装后**硬刷新浏览器**（`Cmd/Ctrl + Shift + R`），打开 **设置 → MCP**。
+如果没看到 MCP 页签，重启一次 DSH（宿主端首次挂载需要）。
+
+## 配置
+
+插件自身只有一项可选配置 —— 它要编辑哪个补丁文件：
+
+```yaml
+- id: mcp-manager
+  name: "@js2hou/dsh-mcp-manager"
+  config:
+    patchFile: /Users/you/.dsh/profiles/desktop/cordis.patch.yml
+```
+
+`patchFile` 默认是 `$DSH_HOME/profiles/web/cordis.patch.yml`。**桌面版必须显式指向 `profiles/desktop/`**，否则增删的 MCP 服务器会写进 Web 版 profile、不生效。
+
+## 架构
+
+```
+src/
+├── index.ts       宿主端入口：注册 /api/mcp-manager 的 Fetch 路由并分发 action
+├── status.ts      遍历 loader 里的 mcp-client 条目，投影状态与工具目录
+├── probe.ts       独立 MCP 连接：probe（计数）/ inspect（工具+提示+资源+版本）
+├── patch.ts       读写 profile 的 cordis.patch.yml（insert / 覆盖 / disabled）
+├── validate.ts    表单校验（与 dsh-mcp-client 的 schema 对齐）
+├── shared.ts      两端共享的类型与常量
+└── client/        浏览器端：设置页、详情页、文案、样式、图标、RPC 封装
+```
+
+**RPC 端点**（走 harness 自带的 `/api` 通道，复用浏览器鉴权）：
+
+| action | 说明 |
 |---|---|
-| `patchFile` | 要编辑的用户补丁层绝对路径。默认 `$DSH_HOME/profiles/web/cordis.patch.yml`。 |
+| `list` | 所有 mcp-client 条目 + 状态 + 工具目录 |
+| `add` / `update` / `remove` | 增改删补丁行 |
+| `setEnabled` | 启停（写 `disabled` 标记） |
+| `probe` | 连通性探测（工具数、版本） |
+| `inspect` | 读取工具（含 schema）、提示、资源、服务版本 |
+| `patchInfo` | 当前补丁文件路径与是否存在 |
 
-## 🏗️ 架构
-
-- **宿主端**（`src/index.ts`）在共享 `/api` 通道的 Fetch 路由（`/api/mcp-manager`）上响应浏览器端的 `{action, data}` 请求，动作包括：`list`（遍历 `ctx.loader` 中的 `@deepseek-ai/dsh-mcp-client` 条目 + `ctx.tools` 统计工具数）、`add` / `remove` / `setEnabled` / `update`（编辑 profile 补丁层，持久化并经 HMR 应用）、`probe`（独立 MCP SDK 连接探测）、`patchInfo`。请求复用该通道的浏览器认证；运行时零 `@deepseek-ai` 依赖（js-yaml 方言、`isJsExpr` 均内联），可放在任意路径安装。
-- **浏览器端**（`src/client`）注册 设置 → MCP 页（`settings.section` 槽位，order 18），经 `ctx.locale` 提供中英双语，与宿主端仅通过 `/api/mcp-manager` 通信——浏览器端不直接访问文件系统。
-- **测试 fixture**：`test/fixtures/mcp-test-server.mjs` 是一个最小 MCP stdio 服务器，用于端到端验证。
+浏览器端通过 `settings.section` 槽位注册页面（order 18），宿主端不依赖任何 `@deepseek-ai` 运行时包（`js-yaml` 方言与 `isJsExpr` 均内联），因此可以放在任意路径安装。
 
 ## 开发
 
-```bash
-pnpm install
-pnpm typecheck   # tsc --noEmit；tsconfig paths 指向你的 DSH 安装目录下的 lib/types
-pnpm build       # esbuild：lib/index.js（宿主端）+ lib/client.js（ModuleLoader 浏览器 bundle）
+```sh
+pnpm install          # 安装依赖（含 esbuild 等构建工具）
+node scripts/build.mjs # 或 pnpm build
 ```
 
-## 许可证
+产物：
 
-MIT
+- `lib/index.js` — 宿主端 ESM bundle（`js-yaml`、`@modelcontextprotocol/*`、`@deepseek-ai/*` 均为 external）
+- `lib/client.js` — 浏览器端 `window.__ModuleLoader__` bundle（`react` 为 external，运行时由宿主注入）
+
+**类型检查的坑**：`tsconfig.json` 里的 `paths` 指向上游作者的 Windows 绝对路径（`D:/ProgramFiles/...`），直接 `tsc` 会找不到 `@deepseek-ai/*`。需要先改成你本地安装的包路径，或另建一份本地 tsconfig。
+
+修改 `src/` 后必须重新构建；客户端改动硬刷新浏览器即可（宿主会观察 `lib/client.js` 的变更），宿主端改动需要重启 DSH。
+
+`test/fixtures/` 下有一个最小的 stdio MCP 服务器，可用于本地联调。
+
+## 已知限制
+
+- **不支持按工具启用 / 自动批准**：`@deepseek-ai/dsh-mcp-client` 会把服务端工具全量注册，插件无法单独开关某个工具，也无法为单个工具设置自动批准，所以工具行是只读展示。
+- **提示 / 资源不是实时数据**：它们由 `inspect` 单独建连读取，点开时拉一次，不会持续同步。
+- **日志是本页操作流水**，不是 mcp-client 进程日志（插件拿不到宿主插件实例的日志）。
+- **服务版本**只有在成功连接（打开详情或点测试）之后才有。
+- **只能管理用户补丁层的条目**：由 bundle 定义的 MCP 条目不能删除或停用。
+- **启停沿用 loader 的 `disabled` 标记**：部分 DSH 版本上重新启用后可能长时间停在「加载中」，此时重启一次 DSH 可恢复。
+
+## 兼容性
+
+在 **DSH Desktop 0.2.1-rc.2（macOS arm64）** 上开发与验证；MCP 协议侧兼容 stdio 与 streamable-http。
+
+## 许可
+
+[MIT](LICENSE)。原始版权归 **Js2Hou** 所有；本仓库是在其基础上的修改版本，同样以 MIT 发布。

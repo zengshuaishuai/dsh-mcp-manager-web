@@ -2,7 +2,9 @@
 
 **DeepSeek Harness 的 MCP 可视化管理器**：在 **设置 → MCP** 里查看、添加、编辑、启停 MCP 服务器，并且能点进单个服务，看到它注册了哪些工具、每个工具的参数结构，以及服务端提供的提示（prompts）和资源（resources）。
 
-> 本仓库是 [Js2Hou/dsh-mcp-manager](https://github.com/Js2Hou/dsh-mcp-manager) 的**二次开发分支**，在原版基础上重做了列表与详情界面，并新增了工具目录、提示/资源读取等能力。原项目版权归原作者所有，见 [LICENSE](LICENSE)。
+> 维护者：[zengshuaishuai](https://github.com/zengshuaishuai)
+>
+> 本项目在 MIT 许可的开源项目 dsh-mcp-manager 基础上二次开发：重做了列表与详情界面，并新增工具目录、提示/资源读取等能力。原始版权声明保留在 [LICENSE](LICENSE) 中。
 
 ---
 
@@ -42,7 +44,7 @@
 ### 方式一：本地源码（`link:`）
 
 ```sh
-git clone <本仓库地址> dsh-mcp-manager
+git clone https://github.com/zengshuaishuai/dsh-mcp-manager.git dsh-mcp-manager
 cd dsh-mcp-manager
 # 仓库已包含构建产物 lib/，只有改过 src/ 才需要重新构建：
 node scripts/build.mjs
@@ -53,7 +55,7 @@ dsh plugin --profile desktop add "link:$PWD"
 ### 方式二：直接装 GitHub 源
 
 ```sh
-dsh plugin --profile desktop add github:<你的账号>/<仓库名>
+dsh plugin --profile desktop add github:zengshuaishuai/dsh-mcp-manager
 ```
 
 `lib/` 已入库，GitHub 源安装不需要本地构建。
@@ -69,7 +71,7 @@ dsh plugin --profile desktop add github:<你的账号>/<仓库名>
 
 ```yaml
 - id: mcp-manager
-  name: "@js2hou/dsh-mcp-manager"
+  name: "@zengshuaishuai/dsh-mcp-manager"
   config:
     patchFile: /Users/you/.dsh/profiles/desktop/cordis.patch.yml
 ```
@@ -135,4 +137,4 @@ node scripts/build.mjs # 或 pnpm build
 
 ## 许可
 
-[MIT](LICENSE)。原始版权归 **Js2Hou** 所有；本仓库是在其基础上的修改版本，同样以 MIT 发布。
+[MIT](LICENSE)。本仓库同样以 MIT 发布；原始项目的版权声明保留在 LICENSE 中。

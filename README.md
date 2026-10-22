@@ -8,6 +8,27 @@
 
 ---
 
+## 界面
+
+**服务器列表**（深色 / 浅色，跟随 DSH 主题）
+
+<p align="center">
+  <img src="assets/screenshots/list-dark.png" alt="MCP 服务器列表（深色）" width="49%" />
+  <img src="assets/screenshots/list-light.png" alt="MCP 服务器列表（浅色）" width="49%" />
+</p>
+
+**服务器详情** —— 连接状态、目标地址、服务版本、补丁文件，以及测试 / 编辑 / 停用 / 删除
+
+![服务器详情](assets/screenshots/detail-dark.png)
+
+**工具目录** —— 搜索工具，展开可看描述与输入参数（必填标记、类型、说明、默认值）
+
+![工具目录与输入参数](assets/screenshots/tools-dark.png)
+
+> 截图为示例数据（GitHub MCP 服务器），界面文案与配色随 DSH 的语言 / 主题自动切换。
+
+---
+
 ## 功能
 
 ### 服务器列表

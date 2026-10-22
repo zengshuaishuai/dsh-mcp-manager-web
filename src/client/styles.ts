@@ -16,7 +16,7 @@ const CSS = `
 .dshmcp-head{display:flex;align-items:center;gap:10px}
 .dshmcp-head-title{font-size:16px;font-weight:600;flex:1;min-width:0;display:flex;align-items:center;gap:8px;color:var(--dsw-alias-label-primary,#e6e8eb)}
 .dshmcp-head-sub{color:var(--dsw-alias-label-tertiary,#8b919c);font-size:12px;font-weight:400}
-.dshmcp-toolbar{display:flex;gap:10px;align-items:center}
+.dshmcp-toolbar{display:flex;gap:10px;align-items:center;flex-wrap:nowrap}
 .dshmcp-btn{appearance:none;font:inherit;border:1px solid var(--dsw-alias-border-l2,#2b2f38);border-radius:8px;padding:6px 14px;
   background:var(--dsw-alias-bg-layer-3,#22262e);color:var(--dsw-alias-label-primary,#e6e8eb);cursor:pointer;line-height:1.45;white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
 .dshmcp-btn:hover:not(:disabled){border-color:var(--dsw-alias-label-dimmed,#4a505c)}
@@ -62,7 +62,7 @@ const CSS = `
 .dshmcp-tools{display:flex;flex-direction:column;gap:8px}
 .dshmcp-tools-toggle{appearance:none;font:inherit;font-size:12px;color:var(--dsw-alias-label-secondary,#a7adb8);background:transparent;border:0;padding:0;cursor:pointer;display:inline-flex;align-items:center;gap:6px;align-self:flex-start}
 .dshmcp-tools-toggle:hover{color:var(--dsw-alias-label-primary,#e6e8eb)}
-.dshmcp-caret{display:inline-block;font-size:10px;transition:transform .15s}
+.dshmcp-caret{display:inline-block;font-size:12px;line-height:1;color:var(--dsw-alias-label-tertiary,#8b919c);transition:transform .15s}
 .dshmcp-caret-open{transform:rotate(90deg)}
 .dshmcp-tool-list{display:flex;flex-wrap:wrap;gap:6px;max-height:190px;overflow:auto;padding:8px 10px;border:1px solid var(--dsw-alias-border-l2,#2b2f38);border-radius:10px;background:var(--dsw-alias-bg-module-platform,#262b34)}
 .dshmcp-tool{font-family:ui-monospace,Consolas,monospace;font-size:11.5px;line-height:1.9;color:var(--dsw-alias-label-secondary,#a7adb8);background:var(--dsw-alias-bg-layer-3,#22262e);border:1px solid var(--dsw-alias-border-l2,#2b2f38);border-radius:6px;padding:1px 7px;white-space:nowrap}
@@ -77,8 +77,8 @@ const CSS = `
 .dshmcp-dot-warn{background:var(--dsw-alias-state-warn-primary,#d29922)}
 .dshmcp-dot-bad{background:var(--dsw-alias-state-error-primary,#f85149)}
 .dshmcp-dot-off{background:var(--dsw-alias-label-dimmed,#4a505c)}
-.dshmcp-row-name{font-size:13.5px;font-weight:500;color:var(--dsw-alias-label-primary,#e6e8eb);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.dshmcp-row-version{color:var(--dsw-alias-label-tertiary,#8b919c);font-size:12px;font-family:ui-monospace,Consolas,monospace}
+.dshmcp-row-name{font-size:13.5px;font-weight:500;color:var(--dsw-alias-label-primary,#e6e8eb);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:0 0 auto;max-width:45%}
+.dshmcp-row-version{color:var(--dsw-alias-label-tertiary,#8b919c);font-size:12px;font-family:ui-monospace,Consolas,monospace;flex:0 1 auto;min-width:0;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .dshmcp-badge{font-size:11px;line-height:1.6;padding:1px 8px;border-radius:999px;border:1px solid var(--dsw-alias-border-l2,#2b2f38);color:var(--dsw-alias-label-secondary,#a7adb8);flex:none}
 .dshmcp-row-tools{margin-left:auto;color:var(--dsw-alias-label-tertiary,#8b919c);font-size:12px;white-space:nowrap;padding-right:6px}
 .dshmcp-switch{appearance:none;border:0;padding:0;width:36px;height:20px;border-radius:999px;background:var(--dsw-alias-border-l2,#3a3f4a);position:relative;cursor:pointer;flex:none;transition:background .15s}
@@ -105,7 +105,7 @@ const CSS = `
 .dshmcp-kv b{font-weight:500;color:var(--dsw-alias-label-primary,#e6e8eb)}
 .dshmcp-wrap{overflow-wrap:anywhere;word-break:break-all}
 .dshmcp-hint-inline{margin:-2px 0 2px 96px;line-height:1.5}
-.dshmcp-muted{color:var(--dsw-alias-label-tertiary,#8b919c);font-size:12px}
+.dshmcp-muted{color:var(--dsw-alias-label-tertiary,#8b919c);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .dshmcp-toolrows{display:flex;flex-direction:column;border:1px solid var(--dsw-alias-border-l2,#2b2f38);border-radius:12px;overflow:hidden;background:var(--dsw-alias-bg-layer-3,#22262e)}
 .dshmcp-toolrow{border-bottom:1px solid var(--dsw-alias-border-l2,#2b2f38)}
 .dshmcp-toolrow:last-child{border-bottom:0}

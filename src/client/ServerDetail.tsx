@@ -323,8 +323,6 @@ export function ServerDetail({
               spellCheck={false}
               onChange={(e) => setQuery(e.target.value)}
             />
-            <span className="dshmcp-spacer" />
-            <span className="dshmcp-muted">{t('toolCount', { count: String(tools.length) })}</span>
           </div>
           {filtered.length === 0 ? (
             <div className="dshmcp-empty">{tools.length === 0 ? t('noTools') : t('noMatch')}</div>

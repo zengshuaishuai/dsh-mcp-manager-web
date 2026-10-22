@@ -91,6 +91,11 @@ function statusOf(server: McpServerInfo): { tone: string; key: StatusKey; count?
   }
 }
 
+/** Keep long server version strings readable inside a list row. */
+function shortVersion(version: string): string {
+  return version.length > 22 ? `${version.slice(0, 22)}…` : version
+}
+
 function targetOf(server: McpServerInfo): string {
   if (server.transport === 'stdio') {
     return [server.command, ...(server.args ?? [])].filter(Boolean).join(' ')
@@ -397,7 +402,7 @@ export function McpManagerSection({ ctx }: SectionProps): JSX.Element {
                 >
                   <span className={`dshmcp-dot dshmcp-dot-${status.tone}`} />
                   <span className="dshmcp-row-name">{server.serverName || t('unnamed')}</span>
-                  {version !== undefined ? <span className="dshmcp-row-version">{version}</span> : null}
+                  {version !== undefined ? <span className="dshmcp-row-version" title={version}>{shortVersion(version)}</span> : null}
                   <span className="dshmcp-badge">{server.transport === 'stdio' ? 'stdio' : t('badgeStreaming')}</span>
                   <span className="dshmcp-row-tools">{t('toolCount', { count: String(server.toolCount) })}</span>
                 </button>

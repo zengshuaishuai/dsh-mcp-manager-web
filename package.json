@@ -36,7 +36,8 @@
   ],
   "scripts": {
     "build": "node scripts/build.mjs",
-    "typecheck": "tsc -p tsconfig.json --noEmit"
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "prepublishOnly": "node scripts/build.mjs"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.15.0",

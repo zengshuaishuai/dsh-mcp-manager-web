@@ -73,7 +73,16 @@ node scripts/build.mjs
 dsh plugin --profile desktop add "link:$PWD"
 ```
 
-### 方式二：直接装 GitHub 源
+### 方式二：npm 包
+
+```sh
+dsh plugin --profile desktop add @zengshuaishuai/dsh-mcp-manager-web
+```
+
+> pnpm 11 会拒绝「发布不足 24 小时」的新包；若安装时报 `minimum release age`，在 profile 的
+> `pnpm-workspace.yaml` 里加 `minimumReleaseAgeExclude: ["@zengshuaishuai/dsh-mcp-manager-web"]` 后重试。
+
+### 方式三：直接装 GitHub 源
 
 ```sh
 dsh plugin --profile desktop add github:zengshuaishuai/dsh-mcp-manager-web
